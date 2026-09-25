@@ -1211,7 +1211,8 @@ img,svg,video,canvas,iframe{max-width:100%;height:auto}
   .solar-command .planet-orbit,.solar-command .orbit-line,.solar-command .solar-star,.command-board-pro:before{animation:none!important}
 }
 </style>
-</head>
+<style>
+.portfolio-loading{font-weight:600;letter-spacing:.02em}.portfolio-empty{grid-column:1/-1;text-align:center;padding:70px 20px;border:1px dashed rgba(11,77,184,.2);border-radius:24px;color:#64748b}.portfolio-image.has-image{overflow:hidden;padding:0}.portfolio-image.has-image img{width:100%;height:100%;object-fit:cover;display:block}.portfolio-item .portfolio-services{font-size:.76rem;color:#64748b;margin-top:10px}.portfolio-item .portfolio-link{display:inline-flex;align-items:center;gap:7px;margin-top:14px;color:#0B4DB8;font-weight:700;font-size:.86rem;text-decoration:none}.portfolio-item .portfolio-link:hover{text-decoration:underline}</style></head>
 <body>
 
   <!-- Navbar -->
@@ -1471,48 +1472,8 @@ img,svg,video,canvas,iframe{max-width:100%;height:auto}
 
       <div class="filter-bar"><button class="filter-btn active" data-filter="all">All Work</button><button class="filter-btn" data-filter="realestate">Real Estate</button><button class="filter-btn" data-filter="social">Social Media</button><button class="filter-btn" data-filter="web">Web & Branding</button></div>
 
-      <div class="portfolio-grid">
-        <div class="portfolio-item fade-in case-open" data-category="realestate" data-case="realestate">
-          <div class="portfolio-image">
-            <i class="fas fa-building-user"></i>
-          </div>
-          <div class="portfolio-content">
-            <h3>Real Estate Lead Campaign</h3>
-            <p>High-converting Meta ads for premium residential projects with optimized creatives and targeting.</p>
-            <div class="results">
-              <div class="result-item">1,200 Leads</div>
-              <div class="result-item">₹45 CPL</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="portfolio-item fade-in case-open" data-category="web" data-case="local">
-          <div class="portfolio-image">
-            <i class="fas fa-store"></i>
-          </div>
-          <div class="portfolio-content">
-            <h3>Local Business Growth</h3>
-            <p>SEO + Google Ads campaign that increased calls, traffic and conversions for a service business.</p>
-            <div class="results">
-              <div class="result-item">3X Traffic</div>
-              <div class="result-item">2.4X Leads</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="portfolio-item fade-in case-open" data-category="social" data-case="social">
-          <div class="portfolio-image">
-            <i class="fas fa-mobile-screen-button"></i>
-          </div>
-          <div class="portfolio-content">
-            <h3>Instagram Brand Growth</h3>
-            <p>Content strategy, reels and ad creatives that improved engagement and follower growth.</p>
-            <div class="results">
-              <div class="result-item">250K Reach</div>
-              <div class="result-item">4.8% Engagement</div>
-            </div>
-          </div>
-        </div>
+      <div class="portfolio-grid" id="portfolioGrid">
+        <div class="portfolio-loading" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;">Loading our latest work…</div>
       </div>
     </div>
   </section>
@@ -1825,7 +1786,7 @@ img,svg,video,canvas,iframe{max-width:100%;height:auto}
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-instagram"></i></a>
             <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            <a href="https://wa.me/919512265249"><i class="fab fa-whatsapp"></i></a>
+            <a data-site-whatsapp href="https://wa.me/919512265249"><i class="fab fa-whatsapp"></i></a>
           </div>
         </div>
 
@@ -1853,9 +1814,9 @@ img,svg,video,canvas,iframe{max-width:100%;height:auto}
         <div>
           <h4>Contact</h4>
           <ul>
-            <li><a href="tel:+919512265249">+91 95122 65249</a></li>
-            <li><a href="mailto:info.deskofdigital@gmail.com">info.deskofdigital@gmail.com</a></li>
-            <li>South Bopal,Ahmedabad, Gujarat</li>
+            <li><a data-site-phone href="tel:+919512265249">+91 95122 65249</a></li>
+            <li><a data-site-email href="mailto:info.deskofdigital@gmail.com">info.deskofdigital@gmail.com</a></li>
+            <li data-site-address>South Bopal, Ahmedabad, Gujarat</li>
           </ul>
         </div>
       </div>
@@ -1867,7 +1828,7 @@ img,svg,video,canvas,iframe{max-width:100%;height:auto}
   </footer>
 
   <!-- WhatsApp -->
-  <a href="https://wa.me/919512265249" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+  <a data-site-whatsapp href="https://wa.me/919512265249" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
     <i class="fab fa-whatsapp"></i>
   </a>
 
@@ -1971,7 +1932,7 @@ if(form){
       status.textContent='Enquiry received successfully. Opening WhatsApp…';
       status.style.color='#147A3D';
       const text=`Hello Desk of Digital,\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nService: ${service}\nGoal: ${message||'Not specified'}`;
-      window.open('https://wa.me/919512265249?text='+encodeURIComponent(text),'_blank');
+      getSiteWhatsApp().then(num=>window.open('https://wa.me/'+num+'?text='+encodeURIComponent(text),'_blank')).catch(()=>window.open('https://wa.me/919512265249?text='+encodeURIComponent(text),'_blank'));
       form.reset();
     }catch(err){
       console.error('Lead submission failed:',err);
@@ -2286,5 +2247,30 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9980;
   window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});
 })();
 </script>
-</body>
+<script>
+(function(){
+const DOD_SUPABASE_URL='https://dtxstmclnkqdadfmbcdi.supabase.co';
+const DOD_SUPABASE_KEY='sb_publishable_7kDK11dZ6bCM112KKjCZHg_OuKd936c';
+const dodClient=window.supabase?.createClient(DOD_SUPABASE_URL,DOD_SUPABASE_KEY);
+const grid=document.getElementById('portfolioGrid');
+if(!dodClient||!grid)return;
+const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function renderPortfolio(items){
+ if(!items?.length){grid.innerHTML='<div class="portfolio-empty"><strong>Portfolio coming soon.</strong><br>Our latest work will appear here.</div>';return;}
+ grid.innerHTML=items.map(x=>{
+  const cat=esc(x.category||'realestate');
+  const image=x.image_url?`<img src="${esc(x.image_url)}" alt="${esc(x.title)}" loading="lazy">`:`<i class="fas ${esc(x.icon||'fa-briefcase')}"></i>`;
+  const results=[x.result_1,x.result_2].filter(Boolean).map(v=>`<div class="result-item">${esc(v)}</div>`).join('');
+  const services=x.services?`<div class="portfolio-services">${esc(x.services)}</div>`:'';
+  const link=x.project_url?`<a class="portfolio-link" href="${esc(x.project_url)}" target="_blank" rel="noopener">View project <i class="fas fa-arrow-up-right-from-square"></i></a>`:'';
+  return `<div class="portfolio-item fade-in case-open" data-category="${cat}" data-case="${esc(x.id)}"><div class="portfolio-image ${x.image_url?'has-image':''}">${image}</div><div class="portfolio-content"><h3>${esc(x.title)}</h3><p>${esc(x.description)}</p><div class="results">${results}</div>${services}${link}</div></div>`;
+ }).join('');
+ grid.querySelectorAll('.case-open').forEach(card=>card.addEventListener('click',e=>{if(e.target.closest('a'))return; const id=card.dataset.case; const item=items.find(x=>String(x.id)===id); if(item&&typeof window.openCaseModal==='function') window.openCaseModal({title:item.title,category:item.category,description:item.description,result1:item.result_1,result2:item.result_2,services:item.services,project_url:item.project_url,image_url:item.image_url});}));
+ if(typeof window.refreshPortfolioFilters==='function')window.refreshPortfolioFilters();
+}
+async function loadPortfolio(){const {data,error}=await dodClient.from('portfolio_items').select('*').eq('featured',true).order('sort_order',{ascending:true}).order('created_at',{ascending:false});if(error){console.warn('Portfolio CMS unavailable:',error.message);return;}renderPortfolio(data||[]);}
+loadPortfolio();
+window.addEventListener('portfolio:refresh',loadPortfolio);
+})();
+</script></body>
 </html>
