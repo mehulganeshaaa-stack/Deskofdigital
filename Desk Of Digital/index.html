@@ -1846,8 +1846,63 @@ const data={realestate:{k:'Real Estate Performance',t:'Premium Residential Lead 
 function openModal(key){const d=data[key];qs('#modalKicker').textContent=d.k;qs('#modalTitle').textContent=d.t;qs('#modalDesc').textContent=d.d;qs('#m1').textContent=d.a;qs('#m2').textContent=d.b;qs('#m3').textContent=d.c;qs('#caseModal').classList.add('open');document.body.style.overflow='hidden'}
 window.closeModal=()=>{qs('#caseModal').classList.remove('open');document.body.style.overflow=''};
 qsa('.case-open').forEach(c=>c.addEventListener('click',()=>openModal(c.dataset.case)));qs('#modalClose').addEventListener('click',closeModal);qs('#caseModal').addEventListener('click',e=>{if(e.target.id==='caseModal')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-// real WhatsApp enquiry
-const form=qs('.lead-form');if(form){form.addEventListener('submit',async e=>{e.preventDefault();const inputs=form.querySelectorAll('input,select,textarea');const name=inputs[0].value.trim(),phone=inputs[1].value.trim(),email=inputs[2].value.trim(),service=inputs[3].value,message=inputs[4].value.trim();const btn=form.querySelector('button[type=submit]');const original=btn.innerHTML;btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';try{const r=await fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,phone,email,service,message,source:'website'})});if(!r.ok)throw new Error('submit');const text=`Hello Desk of Digital,\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nService: ${service}\nGoal: ${message||'Not specified'}`;window.open('https://wa.me/919998450801?text='+encodeURIComponent(text),'_blank');form.reset();btn.innerHTML='<i class="fas fa-check"></i> Enquiry Received';setTimeout(()=>{btn.innerHTML=original;btn.disabled=false},2500)}catch(err){btn.disabled=false;btn.innerHTML=original;alert('We could not submit your enquiry. Please try again or contact us on WhatsApp.')}})}
+// Supabase + WhatsApp enquiry
+const form=qs('.lead-form');
+if(form){
+  const SUPABASE_URL='https://dtxstmclnkqdadfmbcdi.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY='sb_publishable_7kDK11dZ6bCM112KKjCZHg_OuKd936c';
+  const submitBtn=form.querySelector('button[type=submit]');
+  const status=document.createElement('div');
+  status.setAttribute('role','status');
+  status.setAttribute('aria-live','polite');
+  status.style.cssText='margin-top:12px;font-size:13px;font-weight:600;line-height:1.5;';
+  form.appendChild(status);
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const inputs=form.querySelectorAll('input,select,textarea');
+    const name=inputs[0].value.trim();
+    const phone=inputs[1].value.trim();
+    const email=inputs[2].value.trim();
+    const service=inputs[3].value;
+    const message=inputs[4].value.trim();
+    if(!name||!phone||!email||!service){
+      status.textContent='Please complete all required fields.';
+      status.style.color='#B42318';
+      return;
+    }
+    submitBtn.disabled=true;
+    submitBtn.style.opacity='.65';
+    status.textContent='Sending your enquiry…';
+    status.style.color='#0B4DB8';
+    try{
+      const res=await fetch(SUPABASE_URL+'/rest/v1/leads',{
+        method:'POST',
+        headers:{
+          'apikey':SUPABASE_PUBLISHABLE_KEY,
+          'Content-Type':'application/json',
+          'Prefer':'return=minimal'
+        },
+        body:JSON.stringify({name,phone,email,service,message,source:'website',status:'new'})
+      });
+      if(!res.ok){
+        const detail=await res.text().catch(()=> '');
+        throw new Error(detail||'Unable to save enquiry');
+      }
+      status.textContent='Enquiry received successfully. Opening WhatsApp…';
+      status.style.color='#147A3D';
+      const text=`Hello Desk of Digital,\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nService: ${service}\nGoal: ${message||'Not specified'}`;
+      window.open('https://wa.me/919998450801?text='+encodeURIComponent(text),'_blank');
+      form.reset();
+    }catch(err){
+      console.error('Lead submission failed:',err);
+      status.textContent='We could not save your enquiry right now. Please try again or contact us on WhatsApp.';
+      status.style.color='#B42318';
+    }finally{
+      submitBtn.disabled=false;
+      submitBtn.style.opacity='1';
+    }
+  });
+}
 })();
 </script>
 <script>
