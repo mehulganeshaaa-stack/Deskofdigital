@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Desk of Digital - Digital Marketing Agency</title>
+  <title>Desk of Digital — Growth & Digital Marketing Agency</title>
 
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1131,6 +1131,86 @@ html{scroll-behavior:smooth}body{font-family:Poppins,Inter,system-ui,sans-serif;
   .navbar.nav-hidden{transform:translateY(-110%);opacity:0;pointer-events:none;}
   @media (prefers-reduced-motion: reduce){.navbar{transition:none!important}}
 </style>
+
+<style id="dod-mobile-final-hardening">
+/* FINAL MOBILE HARDENING — 390/375/360px safe layout */
+html,body{max-width:100%;overflow-x:hidden}
+img,svg,video,canvas,iframe{max-width:100%;height:auto}
+@media (pointer:coarse){
+  .custom-cursor,.cursor-aura,.cursor-trail{display:none!important}
+  .cursor-reactive{transform:none!important}
+}
+@media (max-width:768px){
+  .container{width:min(100% - 32px,1200px)!important}
+  .navbar{padding:0 16px!important}
+  .nav-wrap{min-height:68px!important}
+  .logo{font-size:20px!important}
+  .hero{min-height:auto!important;padding:116px 0 70px!important}
+  .hero-text h1{font-size:clamp(38px,11vw,58px)!important;line-height:.98!important}
+  .hero-text p{font-size:15px!important;line-height:1.7!important}
+  .cta-buttons{flex-direction:column!important;align-items:stretch!important}
+  .cta-buttons .btn{width:100%!important;justify-content:center!important}
+  .agency-kicker{font-size:9px!important;letter-spacing:.10em!important}
+  .command-board.command-board-pro{border-radius:22px!important}
+  .command-board.command-board-pro .board-copy h3{font-size:clamp(31px,9vw,42px)!important;line-height:1!important}
+  .command-board.command-board-pro .board-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+  .command-board.command-board-pro .board-metrics div{padding:9px 6px!important}
+  .command-board.command-board-pro .board-metrics strong{font-size:18px!important}
+  .command-board.command-board-pro .board-metrics span{font-size:7px!important;letter-spacing:.08em!important}
+}
+/* Keep the solar system physically inside the viewport on phones. */
+@media (max-width:600px){
+  .command-board.command-board-pro .board-visual.solar-command{height:620px!important;min-height:620px!important;overflow:hidden!important}
+  .solar-command .solar-system{width:390px!important;height:390px!important;max-width:none!important;max-height:none!important;top:42%!important;left:50%!important;transform:translate(-50%,-50%) scale(.76)!important;transform-origin:center!important}
+  .solar-command .orbit-strategy{--orbit:180px!important}
+  .solar-command .orbit-creative{--orbit:225px!important}
+  .solar-command .orbit-media{--orbit:270px!important}
+  .solar-command .orbit-web{--orbit:315px!important}
+  .solar-command .orbit-data{--orbit:360px!important}
+  .solar-command .orbit-auto{--orbit:385px!important}
+  .solar-command .solar-star{width:100px!important;height:100px!important}
+  .solar-command .solar-star b{font-size:20px!important}
+  .solar-command .solar-star small{font-size:7px!important}
+  .solar-command .solar-star em{font-size:6px!important}
+  .solar-command .solar-info{left:14px!important;right:14px!important;bottom:14px!important;width:auto!important;padding:12px 13px!important}
+  .solar-command .solar-info strong{font-size:16px!important}
+  .solar-command .solar-info p{font-size:8px!important;line-height:1.45!important}
+  .solar-command .command-readout{left:14px!important;right:auto!important;top:14px!important;width:auto!important;min-width:112px!important}
+  .solar-command .live-feed{display:none!important}
+  .solar-command .planet-orbit strong{font-size:6px!important;letter-spacing:.10em!important}
+}
+@media (max-width:480px){
+  .container{width:min(100% - 28px,1200px)!important}
+  .hero{padding-top:105px!important}
+  .hero-text h1{font-size:40px!important}
+  .command-board.command-board-pro .board-copy{padding:22px 15px 14px!important}
+  .command-board.command-board-pro .board-copy h3{font-size:31px!important}
+  .command-board.command-board-pro .board-visual.solar-command{height:570px!important;min-height:570px!important}
+  .solar-command .solar-system{width:350px!important;height:350px!important;top:40%!important;transform:translate(-50%,-50%) scale(.76)!important}
+  .solar-command .orbit-strategy{--orbit:160px!important}
+  .solar-command .orbit-creative{--orbit:195px!important}
+  .solar-command .orbit-media{--orbit:230px!important}
+  .solar-command .orbit-web{--orbit:265px!important}
+  .solar-command .orbit-data{--orbit:300px!important}
+  .solar-command .orbit-auto{--orbit:325px!important}
+  .solar-command .solar-star{width:88px!important;height:88px!important}
+  .solar-command .solar-star b{font-size:18px!important}
+  .solar-command .solar-info{bottom:12px!important;left:12px!important;right:12px!important}
+  .solar-command .solar-info p{display:none!important}
+  .solar-command .command-readout{top:12px!important;left:12px!important;min-width:104px!important;padding:9px 10px!important}
+}
+@media (max-width:360px){
+  .hero-text h1{font-size:36px!important}
+  .command-board.command-board-pro .board-metrics div{padding:8px 4px!important}
+  .command-board.command-board-pro .board-metrics strong{font-size:16px!important}
+  .command-board.command-board-pro .board-visual.solar-command{height:540px!important;min-height:540px!important}
+  .solar-command .solar-system{width:320px!important;height:320px!important;top:39%!important}
+  .solar-command .orbit-strategy{--orbit:145px!important}.solar-command .orbit-creative{--orbit:175px!important}.solar-command .orbit-media{--orbit:205px!important}.solar-command .orbit-web{--orbit:235px!important}.solar-command .orbit-data{--orbit:265px!important}.solar-command .orbit-auto{--orbit:290px!important}
+}
+@media (prefers-reduced-motion:reduce){
+  .solar-command .planet-orbit,.solar-command .orbit-line,.solar-command .solar-star,.command-board-pro:before{animation:none!important}
+}
+</style>
 </head>
 <body>
 
@@ -1774,7 +1854,7 @@ html{scroll-behavior:smooth}body{font-family:Poppins,Inter,system-ui,sans-serif;
           <h4>Contact</h4>
           <ul>
             <li><a href="tel:+919512265249">+91 95122 65249</a></li>
-            <li><a href="mailto:hello@deskofdigital.com">info.deskofdigital@gmail.com</a></li>
+            <li><a href="mailto:info.deskofdigital@gmail.com">info.deskofdigital@gmail.com</a></li>
             <li>South Bopal,Ahmedabad, Gujarat</li>
           </ul>
         </div>
