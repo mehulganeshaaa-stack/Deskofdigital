@@ -10,6 +10,7 @@
   <title>Desk of Digital — Growth & Digital Marketing Agency</title>
 
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -2268,7 +2269,7 @@ function renderPortfolio(items){
  grid.querySelectorAll('.case-open').forEach(card=>card.addEventListener('click',e=>{if(e.target.closest('a'))return; const id=card.dataset.case; const item=items.find(x=>String(x.id)===id); if(item&&typeof window.openCaseModal==='function') window.openCaseModal({title:item.title,category:item.category,description:item.description,result1:item.result_1,result2:item.result_2,services:item.services,project_url:item.project_url,image_url:item.image_url});}));
  if(typeof window.refreshPortfolioFilters==='function')window.refreshPortfolioFilters();
 }
-async function loadPortfolio(){const {data,error}=await dodClient.from('portfolio_items').select('*').eq('featured',true).order('sort_order',{ascending:true}).order('created_at',{ascending:false});if(error){console.warn('Portfolio CMS unavailable:',error.message);return;}renderPortfolio(data||[]);}
+async function loadPortfolio(){try{const {data,error}=await dodClient.from('portfolio_items').select('*').eq('featured',true).order('sort_order',{ascending:true}).order('created_at',{ascending:false});if(error){console.warn('Portfolio CMS unavailable:',error.message);grid.innerHTML='<div class="portfolio-empty"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';return;}renderPortfolio(data||[]);}catch(err){console.warn('Portfolio CMS unavailable:',err);grid.innerHTML='<div class="portfolio-empty"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';}}
 loadPortfolio();
 window.addEventListener('portfolio:refresh',loadPortfolio);
 })();
