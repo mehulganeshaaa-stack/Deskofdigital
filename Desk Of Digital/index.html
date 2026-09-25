@@ -2248,30 +2248,53 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9980;
   window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});
 })();
 </script>
-<script>
+<script id="dod-portfolio-cms-js">
 (function(){
-const DOD_SUPABASE_URL='https://dtxstmclnkqdadfmbcdi.supabase.co';
-const DOD_SUPABASE_KEY='sb_publishable_7kDK11dZ6bCM112KKjCZHg_OuKd936c';
-const dodClient=window.supabase?.createClient(DOD_SUPABASE_URL,DOD_SUPABASE_KEY);
-const grid=document.getElementById('portfolioGrid');
-if(!dodClient||!grid)return;
-const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-function renderPortfolio(items){
- if(!items?.length){grid.innerHTML='<div class="portfolio-empty"><strong>Portfolio coming soon.</strong><br>Our latest work will appear here.</div>';return;}
- grid.innerHTML=items.map(x=>{
-  const cat=esc(x.category||'realestate');
-  const image=x.image_url?`<img src="${esc(x.image_url)}" alt="${esc(x.title)}" loading="lazy">`:`<i class="fas ${esc(x.icon||'fa-briefcase')}"></i>`;
-  const results=[x.result_1,x.result_2].filter(Boolean).map(v=>`<div class="result-item">${esc(v)}</div>`).join('');
-  const services=x.services?`<div class="portfolio-services">${esc(x.services)}</div>`:'';
-  const link=x.project_url?`<a class="portfolio-link" href="${esc(x.project_url)}" target="_blank" rel="noopener">View project <i class="fas fa-arrow-up-right-from-square"></i></a>`:'';
-  return `<div class="portfolio-item fade-in case-open" data-category="${cat}" data-case="${esc(x.id)}"><div class="portfolio-image ${x.image_url?'has-image':''}">${image}</div><div class="portfolio-content"><h3>${esc(x.title)}</h3><p>${esc(x.description)}</p><div class="results">${results}</div>${services}${link}</div></div>`;
- }).join('');
- grid.querySelectorAll('.case-open').forEach(card=>card.addEventListener('click',e=>{if(e.target.closest('a'))return; const id=card.dataset.case; const item=items.find(x=>String(x.id)===id); if(item&&typeof window.openCaseModal==='function') window.openCaseModal({title:item.title,category:item.category,description:item.description,result1:item.result_1,result2:item.result_2,services:item.services,project_url:item.project_url,image_url:item.image_url});}));
- if(typeof window.refreshPortfolioFilters==='function')window.refreshPortfolioFilters();
-}
-async function loadPortfolio(){try{const {data,error}=await dodClient.from('portfolio_items').select('*').eq('featured',true).order('sort_order',{ascending:true}).order('created_at',{ascending:false});if(error){console.warn('Portfolio CMS unavailable:',error.message);grid.innerHTML='<div class="portfolio-empty"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';return;}renderPortfolio(data||[]);}catch(err){console.warn('Portfolio CMS unavailable:',err);grid.innerHTML='<div class="portfolio-empty"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';}}
-loadPortfolio();
-window.addEventListener('portfolio:refresh',loadPortfolio);
+  const SUPABASE_URL='https://dtxstmclnkqdadfmbcdi.supabase.co';
+  const SUPABASE_KEY='sb_publishable_7kDK11dZ6bCM112KKjCZHg_OuKd936c';
+  const grid=document.getElementById('portfolioGrid');
+  if(!grid)return;
+  const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  function renderPortfolio(items){
+    if(!Array.isArray(items)||!items.length){
+      grid.innerHTML='<div class="portfolio-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;"><strong>Portfolio coming soon.</strong><br>Our latest work will appear here.</div>';
+      return;
+    }
+    grid.innerHTML=items.map(x=>{
+      const cat=esc(x.category||'realestate');
+      const image=x.image_url?`<img src="${esc(x.image_url)}" alt="${esc(x.title)}" loading="lazy">`:`<i class="fas ${esc(x.icon||'fa-briefcase')}"></i>`;
+      const results=[x.result_1,x.result_2].filter(Boolean).map(v=>`<div class="result-item">${esc(v)}</div>`).join('');
+      const services=x.services?`<div class="portfolio-services">${esc(x.services)}</div>`:'';
+      const link=x.project_url?`<a class="portfolio-link" href="${esc(x.project_url)}" target="_blank" rel="noopener">View project <i class="fas fa-arrow-up-right-from-square"></i></a>`:'';
+      return `<div class="portfolio-item fade-in case-open" data-category="${cat}" data-case="${esc(x.id)}"><div class="portfolio-image ${x.image_url?'has-image':''}">${image}</div><div class="portfolio-content"><h3>${esc(x.title)}</h3><p>${esc(x.description)}</p><div class="results">${results}</div>${services}${link}</div></div>`;
+    }).join('');
+    grid.querySelectorAll('.case-open').forEach(card=>card.addEventListener('click',e=>{
+      if(e.target.closest('a'))return;
+      const id=card.dataset.case;
+      const item=items.find(x=>String(x.id)===id);
+      if(item&&typeof window.openCaseModal==='function')window.openCaseModal({title:item.title,category:item.category,description:item.description,result1:item.result_1,result2:item.result_2,services:item.services,project_url:item.project_url,image_url:item.image_url});
+    }));
+    if(typeof window.refreshPortfolioFilters==='function')window.refreshPortfolioFilters();
+  }
+  async function loadPortfolio(){
+    try{
+      const url=SUPABASE_URL+'/rest/v1/portfolio_items?select=*&featured=eq.true&order=sort_order.asc,created_at.desc';
+      const response=await fetch(url,{method:'GET',headers:{'apikey':SUPABASE_KEY,'Accept':'application/json'}});
+      if(!response.ok){
+        const body=await response.text();
+        console.warn('Portfolio CMS request failed:',response.status,body);
+        grid.innerHTML='<div class="portfolio-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';
+        return;
+      }
+      const data=await response.json();
+      renderPortfolio(data);
+    }catch(err){
+      console.warn('Portfolio CMS request failed:',err);
+      grid.innerHTML='<div class="portfolio-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';
+    }
+  }
+  loadPortfolio();
+  window.addEventListener('portfolio:refresh',loadPortfolio);
 })();
 </script></body>
 </html>
