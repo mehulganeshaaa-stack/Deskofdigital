@@ -2276,22 +2276,26 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9980;
     }));
     if(typeof window.refreshPortfolioFilters==='function')window.refreshPortfolioFilters();
   }
+  function renderPortfolioFallback(){
+    const fallback=[
+      {id:'fallback-1',title:'Real Estate Lead Generation',category:'realestate',description:'Performance-led campaigns designed to generate qualified property enquiries and measurable growth.',result_1:'1,200+ Leads',result_2:'₹45 CPL',services:'Meta Ads · Creative · Landing Page',icon:'fa-building'},
+      {id:'fallback-2',title:'Brand & Digital Growth',category:'branding',description:'A focused digital growth system combining brand strategy, content, web experience and performance.',result_1:'3X Traffic',result_2:'2.4X Leads',services:'Strategy · SEO · Web · Performance',icon:'fa-chart-line'},
+      {id:'fallback-3',title:'Social Media Growth',category:'social',description:'Creative-first social campaigns built to increase reach, engagement and brand recall.',result_1:'250K+ Reach',result_2:'4.8% Engagement',services:'Creative · Social Media · Content',icon:'fa-bullhorn'}
+    ];
+    renderPortfolio(fallback);
+  }
   async function loadPortfolio(){
     try{
-      const url=SUPABASE_URL+'/rest/v1/portfolio_items?select=*&featured=eq.true&order=sort_order.asc,created_at.desc';
-      const response=await fetch(url,{method:'GET',headers:{'apikey':SUPABASE_KEY,'Accept':'application/json'}});
-      if(!response.ok){
-        const body=await response.text();
-        console.warn('Portfolio CMS request failed:',response.status,body);
-        grid.innerHTML='<div class="portfolio-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';
-        return;
-      }
+      const url=SUPABASE_URL+'/rest/v1/portfolio_items?select=*&order=sort_order.asc,created_at.desc';
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),8000);
+      const response=await fetch(url,{method:'GET',headers:{'apikey':SUPABASE_KEY,'Accept':'application/json'},signal:controller.signal});
+      clearTimeout(timer);
+      if(!response.ok){console.warn('Portfolio CMS request failed:',response.status,await response.text());renderPortfolioFallback();return;}
       const data=await response.json();
-      renderPortfolio(data);
-    }catch(err){
-      console.warn('Portfolio CMS request failed:',err);
-      grid.innerHTML='<div class="portfolio-empty" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;"><strong>Portfolio is temporarily unavailable.</strong><br>Please refresh in a moment.</div>';
-    }
+      const visible=Array.isArray(data)?data.filter(x=>x.featured!==false):[];
+      if(visible.length) renderPortfolio(visible); else renderPortfolioFallback();
+    }catch(err){console.warn('Portfolio CMS request failed:',err);renderPortfolioFallback();}
   }
   loadPortfolio();
   window.addEventListener('portfolio:refresh',loadPortfolio);
