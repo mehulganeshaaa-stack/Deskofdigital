@@ -2297,6 +2297,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9980;
       if(visible.length) renderPortfolio(visible); else renderPortfolioFallback();
     }catch(err){console.warn('Portfolio CMS request failed:',err);renderPortfolioFallback();}
   }
+  // Always render a usable portfolio immediately. The CMS data will replace it when available.
+  renderPortfolioFallback();
   loadPortfolio();
   window.addEventListener('portfolio:refresh',loadPortfolio);
 })();
